@@ -100,7 +100,10 @@
         "authority",
         "jurisdiction",
         "source_status",
+        "regulatory_force",
         "document_type",
+        "authority_rationale",
+        "status_rationale",
         "publication_date",
         "effective_date_status",
         "source_currentness",
@@ -127,6 +130,21 @@
             "UNKNOWN"
           ]
         },
+        "regulatory_force": {
+          "type": "string",
+          "enum": [
+            "BINDING",
+            "NONBINDING_GUIDANCE",
+            "DRAFT_NONBINDING",
+            "STANDARD_OR_CONSENSUS",
+            "SIGNAL_ONLY",
+            "WITHDRAWN_OR_SUPERSEDED",
+            "UNKNOWN",
+            "HUMAN_JUDGMENT_REQUIRED"
+          ]
+        },
+        "authority_rationale": {"type": "string", "minLength": 1},
+        "status_rationale": {"type": "string", "minLength": 1},
         "publication_date": {"type": ["string", "null"], "format": "date"},
         "effective_date": {"type": ["string", "null"], "format": "date"},
         "effective_date_status": {
