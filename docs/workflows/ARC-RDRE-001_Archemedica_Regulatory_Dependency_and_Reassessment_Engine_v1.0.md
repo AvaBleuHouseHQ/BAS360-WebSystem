@@ -405,7 +405,7 @@ This document defines a controlled workflow design and machine-readable contract
 ## Change History
 
 | Version | Date | Change | Disposition |
-|---|---|---|
+|---|---|---|---|
 | 1.0 | 2026-08-30 | Initial RDRE workflow and ADR-0007 Tier-3 review | PILOT - BUILD CONTROLLED MVP |
 
 **END OF CONTROLLED DOCUMENT**
