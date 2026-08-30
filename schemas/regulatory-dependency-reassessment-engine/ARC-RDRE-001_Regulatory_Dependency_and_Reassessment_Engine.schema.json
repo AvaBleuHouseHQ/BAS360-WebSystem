@@ -1,0 +1,421 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://archemedica.local/schemas/regulatory-dependency-reassessment-engine/v1.0",
+  "title": "Archemedica Regulatory Dependency and Reassessment Engine",
+  "description": "Controlled regulatory source/version change assessment and reassessment workflow. This schema does not establish compliance, validation, legal sufficiency, or regulator acceptance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "rdre_id",
+    "schema_version",
+    "tenant_id",
+    "source_event",
+    "source_assessment",
+    "regulatory_changes",
+    "applicability_assessment",
+    "interpretation_impacts",
+    "ddg_impact",
+    "reassessment_obligations",
+    "human_disposition",
+    "closure",
+    "provenance"
+  ],
+  "properties": {
+    "rdre_id": {
+      "type": "string",
+      "pattern": "^RDRE-[A-Z0-9][A-Z0-9_-]{2,63}$"
+    },
+    "schema_version": {
+      "const": "1.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "study_context": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "program_id": {"type": ["string", "null"]},
+        "study_id": {"type": ["string", "null"]},
+        "development_phase": {"type": ["string", "null"]},
+        "jurisdictions": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "study_status": {"type": ["string", "null"]}
+      }
+    },
+    "source_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "event_type",
+        "canonical_source_ref",
+        "prior_source_version_ref",
+        "new_source_version_ref",
+        "signal_origin",
+        "event_received_at"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "pattern": "^RSE-[A-Z0-9_-]+$"},
+        "event_type": {
+          "type": "string",
+          "enum": [
+            "NEW_SOURCE",
+            "SOURCE_VERSION_CHANGED",
+            "SOURCE_STATUS_CHANGED",
+            "SOURCE_WITHDRAWN",
+            "SOURCE_SUPERSEDED",
+            "EFFECTIVE_DATE_CHANGED",
+            "CONFLICT_SIGNAL",
+            "MANUAL_REVIEW_TRIGGER"
+          ]
+        },
+        "canonical_source_ref": {"type": "string", "minLength": 1},
+        "prior_source_version_ref": {"type": ["string", "null"]},
+        "new_source_version_ref": {"type": ["string", "null"]},
+        "signal_origin": {
+          "type": "string",
+          "enum": [
+            "CANONICAL_SOURCE_INGESTION",
+            "MANUAL_REGULATORY_INPUT",
+            "EVIDENCE_REGISTRY_UPDATE",
+            "DDG_CHANGE_EVENT",
+            "PCDI_TRIGGER",
+            "SECONDARY_SIGNAL",
+            "OTHER"
+          ]
+        },
+        "event_received_at": {"type": "string", "format": "date-time"},
+        "secondary_signal_ref": {"type": ["string", "null"]},
+        "notes": {"type": ["string", "null"]}
+      }
+    },
+    "source_assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "jurisdiction",
+        "source_status",
+        "document_type",
+        "publication_date",
+        "effective_date_status",
+        "source_currentness",
+        "canonical_ingestion_status"
+      ],
+      "properties": {
+        "authority": {"type": "string", "minLength": 1},
+        "jurisdiction": {"type": "string", "minLength": 1},
+        "document_type": {"type": "string", "minLength": 1},
+        "source_status": {
+          "type": "string",
+          "enum": [
+            "BINDING_LAW_OR_REGULATION",
+            "FINAL_GUIDANCE_NONBINDING",
+            "DRAFT_GUIDANCE",
+            "FINAL_STANDARD",
+            "DRAFT_STANDARD",
+            "AGENCY_NOTICE",
+            "Q_AND_A_OR_INTERPRETIVE",
+            "ENFORCEMENT_OR_INSPECTION_SIGNAL",
+            "SECONDARY_SIGNAL",
+            "WITHDRAWN",
+            "SUPERSEDED",
+            "UNKNOWN"
+          ]
+        },
+        "publication_date": {"type": ["string", "null"], "format": "date"},
+        "effective_date": {"type": ["string", "null"], "format": "date"},
+        "effective_date_status": {
+          "type": "string",
+          "enum": ["KNOWN", "MULTIPLE", "UNCLEAR", "NOT_APPLICABLE", "HUMAN_JUDGMENT_REQUIRED"]
+        },
+        "source_currentness": {
+          "type": "string",
+          "enum": ["CURRENT", "POTENTIALLY_STALE", "SUPERSEDED", "WITHDRAWN", "UNKNOWN"]
+        },
+        "canonical_ingestion_status": {
+          "type": "string",
+          "enum": ["COMPLETE", "PARTIAL", "HOLD_SOURCE_IDENTITY", "HOLD_AUTHORITY", "HOLD_VERSION", "REJECTED_SECONDARY_ONLY"]
+        },
+        "source_hash": {"type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$"},
+        "archive_ref": {"type": ["string", "null"]},
+        "supersedes_source_refs": {"type": "array", "items": {"type": "string"}},
+        "superseded_by_source_refs": {"type": "array", "items": {"type": "string"}},
+        "limitations": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "regulatory_changes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "change_id",
+          "change_class",
+          "source_location",
+          "materiality",
+          "status"
+        ],
+        "properties": {
+          "change_id": {"type": "string", "pattern": "^RCHG-[A-Z0-9_-]+$"},
+          "change_class": {
+            "type": "string",
+            "enum": [
+              "NEW_SOURCE",
+              "TEXT_CHANGED",
+              "STATUS_CHANGED",
+              "EFFECTIVE_DATE_CHANGED",
+              "SUPERSESSION",
+              "WITHDRAWAL",
+              "SCOPE_CHANGED",
+              "INTERPRETATION_CHANGED",
+              "CONFLICT_IDENTIFIED",
+              "CLARIFICATION",
+              "CORRECTION",
+              "OTHER"
+            ]
+          },
+          "source_location": {"type": "string", "minLength": 1},
+          "prior_basis": {"type": ["string", "null"]},
+          "new_basis": {"type": ["string", "null"]},
+          "topic": {"type": ["string", "null"]},
+          "materiality": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL", "UNDETERMINED"]},
+          "status": {"type": "string", "enum": ["PROPOSED", "CONFIRMED", "REJECTED_AS_CHANGE", "SUPERSEDED"]},
+          "effective_timing_note": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "applicability_assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overall_applicability", "assessed_contexts", "human_judgment_required"],
+      "properties": {
+        "overall_applicability": {
+          "type": "string",
+          "enum": [
+            "APPLICABLE",
+            "POTENTIALLY_APPLICABLE",
+            "NOT_APPLICABLE",
+            "OUT_OF_SCOPE",
+            "HUMAN_JUDGMENT_REQUIRED",
+            "INSUFFICIENT_INFORMATION"
+          ]
+        },
+        "assessed_contexts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["context_id", "jurisdiction", "applicability", "rationale"],
+            "properties": {
+              "context_id": {"type": "string", "minLength": 1},
+              "jurisdiction": {"type": "string", "minLength": 1},
+              "study_or_product_scope": {"type": ["string", "null"]},
+              "effective_date_basis": {"type": ["string", "null"]},
+              "applicability": {
+                "type": "string",
+                "enum": [
+                  "APPLICABLE",
+                  "POTENTIALLY_APPLICABLE",
+                  "NOT_APPLICABLE",
+                  "OUT_OF_SCOPE",
+                  "HUMAN_JUDGMENT_REQUIRED",
+                  "INSUFFICIENT_INFORMATION"
+                ]
+              },
+              "rationale": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "human_judgment_required": {"type": "boolean"},
+        "unresolved_questions": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "interpretation_impacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "interpretation_ref",
+          "impact_status",
+          "prior_interpretation_status",
+          "eig_assessment_ref",
+          "recommended_action"
+        ],
+        "properties": {
+          "interpretation_ref": {"type": "string", "minLength": 1},
+          "rule_ref": {"type": ["string", "null"]},
+          "impact_status": {
+            "type": "string",
+            "enum": [
+              "NO_IMPACT_IDENTIFIED",
+              "POSSIBLY_STALE",
+              "CONFIRMED_STALE",
+              "CONFLICTED",
+              "OUTSIDE_CONTEXT",
+              "HUMAN_JUDGMENT_REQUIRED",
+              "NOT_ASSESSED"
+            ]
+          },
+          "prior_interpretation_status": {
+            "type": "string",
+            "enum": ["ACTIVE", "STALE", "SUPERSEDED", "WITHDRAWN", "DRAFT", "UNKNOWN"]
+          },
+          "eig_assessment_ref": {"type": ["string", "null"]},
+          "affected_jurisdictions": {"type": "array", "items": {"type": "string"}},
+          "recommended_action": {
+            "type": "string",
+            "enum": [
+              "NO_ACTION",
+              "REVIEW",
+              "UPDATE_INTERPRETATION",
+              "SUPERSEDE_INTERPRETATION",
+              "ESCALATE",
+              "DEFER_PENDING_EVIDENCE"
+            ]
+          },
+          "rationale": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "ddg_impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["change_event_ref", "analysis_ref", "candidate_count", "impact_paths"],
+      "properties": {
+        "change_event_ref": {"type": ["string", "null"]},
+        "analysis_ref": {"type": "string", "minLength": 1},
+        "candidate_count": {"type": "integer", "minimum": 0},
+        "impact_paths": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path_id", "affected_object_ref", "affected_object_type", "path_summary", "materiality"],
+            "properties": {
+              "path_id": {"type": "string", "minLength": 1},
+              "affected_object_ref": {"type": "string", "minLength": 1},
+              "affected_object_type": {
+                "type": "string",
+                "enum": ["DER", "PCDI_PACKET", "EIG_ASSESSMENT", "CONTROLLED_ARTIFACT", "INTERPRETATION", "RULE", "OTHER"]
+              },
+              "path_summary": {"type": "string", "minLength": 1},
+              "edge_refs": {"type": "array", "items": {"type": "string"}},
+              "materiality": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
+              "dependency_condition_applied": {"type": ["string", "null"]}
+            }
+          }
+        },
+        "false_cascade_controls_applied": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "reassessment_obligations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["obligation_id", "affected_object_ref", "obligation_status", "owner", "due_basis"],
+        "properties": {
+          "obligation_id": {"type": "string", "pattern": "^RRO-[A-Z0-9_-]+$"},
+          "affected_object_ref": {"type": "string", "minLength": 1},
+          "affected_object_type": {
+            "type": "string",
+            "enum": ["DER", "PCDI_PACKET", "EIG_ASSESSMENT", "CONTROLLED_ARTIFACT", "INTERPRETATION", "RULE", "OTHER"]
+          },
+          "obligation_status": {
+            "type": "string",
+            "enum": [
+              "REASSESSMENT_REQUIRED",
+              "REASSESSMENT_ADVISORY",
+              "HUMAN_TRIAGE_REQUIRED",
+              "NO_ACTION_JUSTIFIED",
+              "DUPLICATE_OF_EXISTING_REASSESSMENT",
+              "CLOSED_NO_LONGER_ACTIVE"
+            ]
+          },
+          "owner": {"type": "string", "minLength": 1},
+          "due_basis": {"type": "string", "minLength": 1},
+          "related_der_ref": {"type": ["string", "null"]},
+          "related_pcdi_ref": {"type": ["string", "null"]},
+          "blocking": {"type": "boolean"},
+          "rationale": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "human_disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["disposition_status", "accountable_owner", "decision_at", "rationale"],
+      "properties": {
+        "disposition_status": {
+          "type": "string",
+          "enum": [
+            "REAFFIRM_NO_CHANGE",
+            "UPDATE_INTERPRETATION",
+            "SUPERSEDE_INTERPRETATION",
+            "CREATE_SUCCESSOR_DER",
+            "UPDATE_CONTROLLED_ARTIFACT",
+            "CLOSE_NO_ACTION",
+            "ESCALATE_TO_REGULATORY_LEGAL_QA",
+            "DEFER_PENDING_AUTHORITY_OR_EVIDENCE",
+            "WITHDRAW_PRIOR_POSITION",
+            "PENDING"
+          ]
+        },
+        "accountable_owner": {"type": "string", "minLength": 1},
+        "decision_at": {"type": ["string", "null"], "format": "date-time"},
+        "reviewed_source_refs": {"type": "array", "items": {"type": "string"}},
+        "rationale": {"type": "string", "minLength": 1},
+        "residual_risk": {"type": ["string", "null"]},
+        "required_actions": {"type": "array", "items": {"type": "string"}},
+        "unresolved_conflicts": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "closure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["closure_status", "supersession_required"],
+      "properties": {
+        "closure_status": {
+          "type": "string",
+          "enum": ["OPEN", "PARTIALLY_CLOSED", "CLOSED", "CLOSED_NO_ACTION", "SUPERSEDED", "WITHDRAWN"]
+        },
+        "supersession_required": {"type": "boolean"},
+        "supersedes_refs": {"type": "array", "items": {"type": "string"}},
+        "superseded_by_refs": {"type": "array", "items": {"type": "string"}},
+        "closure_evidence_refs": {"type": "array", "items": {"type": "string"}},
+        "closed_at": {"type": ["string", "null"], "format": "date-time"},
+        "closure_rationale": {"type": ["string", "null"]}
+      }
+    },
+    "emergency_safety_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "urgent_safety_related": {"type": "boolean"},
+        "pcdi_immediate_hazard_ref": {"type": ["string", "null"]},
+        "rdre_must_not_delay_action": {"type": "boolean"},
+        "follow_up_required": {"type": "boolean"},
+        "notes": {"type": ["string", "null"]}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["created_at", "created_by", "audit_event_ids"],
+      "properties": {
+        "created_at": {"type": "string", "format": "date-time"},
+        "created_by": {"type": "string", "minLength": 1},
+        "input_snapshot_refs": {"type": "array", "items": {"type": "string"}},
+        "audit_event_ids": {"type": "array", "items": {"type": "string"}},
+        "record_hash": {"type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$"}
+      }
+    }
+  }
+}
