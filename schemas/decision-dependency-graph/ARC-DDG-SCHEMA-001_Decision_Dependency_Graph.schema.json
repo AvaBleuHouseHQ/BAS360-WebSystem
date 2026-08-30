@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://archemedica.local/schemas/decision-dependency-graph/v1.0",
+  "title": "Archemedica Decision Dependency Graph Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["graph_version", "tenant_id", "nodes", "edges", "change_events"],
+  "properties": {
+    "graph_version": {"const": "1.0"},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["node_id", "node_type", "canonical_ref", "status"],
+        "properties": {
+          "node_id": {"type": "string", "minLength": 1},
+          "node_type": {"type": "string", "enum": ["DECISION", "EVIDENCE", "ASSUMPTION", "MODEL_VERSION", "REGULATORY_SOURCE", "CONTROLLED_ARTIFACT", "OUTCOME"]},
+          "canonical_ref": {"type": "string", "minLength": 1},
+          "tenant_id": {"type": "string", "minLength": 1},
+          "status": {"type": "string", "enum": ["ACTIVE", "STALE", "SUPERSEDED", "WITHDRAWN", "ARCHIVED"]},
+          "effective_from": {"type": ["string", "null"], "format": "date-time"},
+          "effective_to": {"type": ["string", "null"], "format": "date-time"},
+          "version_or_hash": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["edge_id", "source_node_id", "target_node_id", "relationship", "materiality", "status", "created_at", "provenance_ref"],
+        "properties": {
+          "edge_id": {"type": "string", "pattern": "^EDGE-[A-Z0-9_-]+$"},
+          "source_node_id": {"type": "string", "minLength": 1},
+          "target_node_id": {"type": "string", "minLength": 1},
+          "relationship": {"type": "string", "enum": ["DECISION_DEPENDS_ON_EVIDENCE", "DECISION_LIMITED_BY_EVIDENCE", "DECISION_ASSUMES", "DECISION_USED_MODEL", "DECISION_GOVERNED_BY_REGULATORY_SOURCE", "DECISION_AFFECTS_ARTIFACT", "DECISION_AFFECTS_DECISION", "DECISION_SUPERSEDES_DECISION", "EVIDENCE_SUPERSEDES_EVIDENCE", "MODEL_VERSION_SUPERSEDES_MODEL_VERSION", "DECISION_RESULTED_IN_OUTCOME"]},
+          "materiality": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
+          "dependency_condition": {"type": ["string", "null"]},
+          "status": {"type": "string", "enum": ["ACTIVE", "SUPERSEDED", "RETIRED"]},
+          "created_at": {"type": "string", "format": "date-time"},
+          "created_by": {"type": ["string", "null"]},
+          "provenance_ref": {"type": "string", "minLength": 1},
+          "supersedes_edge_id": {"type": ["string", "null"]},
+          "superseded_by_edge_id": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "change_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event_id", "changed_node_id", "change_type", "detected_at", "materiality", "evaluation_status"],
+        "properties": {
+          "event_id": {"type": "string", "pattern": "^CHG-[A-Z0-9_-]+$"},
+          "changed_node_id": {"type": "string", "minLength": 1},
+          "change_type": {"type": "string", "enum": ["CONTENT_CHANGED", "VERSION_SUPERSEDED", "STATUS_CHANGED", "ASSUMPTION_FALSIFIED", "MODEL_RETIRED", "MODEL_VALIDATION_CHANGED", "REGULATORY_SOURCE_CHANGED", "ARTIFACT_CHANGED", "OUTCOME_CONTRADICTED", "MANUAL_REVIEW_TRIGGER"]},
+          "detected_at": {"type": "string", "format": "date-time"},
+          "materiality": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
+          "evaluation_status": {"type": "string", "enum": ["NEW", "IMPACT_ANALYSIS_PENDING", "IMPACT_ANALYZED", "REASSESSMENT_CREATED", "NO_ACTION_JUSTIFIED", "CLOSED"]},
+          "source_ref": {"type": ["string", "null"]},
+          "notes": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}
