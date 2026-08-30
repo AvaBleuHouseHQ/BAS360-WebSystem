@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://archemedica.local/schemas/integrated-control-plane/v1.0",
+  "title": "Archemedica Integrated Control Plane",
+  "description": "Cross-cutting system-integrity envelope for consequential Archemedica processing. Structural validity does not establish scientific correctness, regulatory compliance, security validation, or production fitness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "control_envelope_id",
+    "schema_version",
+    "tenant_context",
+    "object_context",
+    "event_context",
+    "authorization_context",
+    "processing_state",
+    "audit_refs"
+  ],
+  "properties": {
+    "control_envelope_id": {"type": "string", "pattern": "^CTRL-[A-Z0-9_-]+$"},
+    "schema_version": {"const": "1.0"},
+    "tenant_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tenant_id", "policy_context_id", "authorization_version"],
+      "properties": {
+        "tenant_id": {"type": "string", "minLength": 1},
+        "policy_context_id": {"type": "string", "minLength": 1},
+        "authorization_version": {"type": "string", "minLength": 1},
+        "shared_source_scope": {"type": "boolean", "default": false}
+      }
+    },
+    "object_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["object_id", "lineage_id", "object_type", "current_revision", "expected_prior_revision"],
+      "properties": {
+        "object_id": {"type": "string", "minLength": 1},
+        "lineage_id": {"type": "string", "minLength": 1},
+        "object_type": {"type": "string", "enum": ["DER","EIG","DDG_ANALYSIS","PCDI","RDRE","MODEL_USE","OUTCOME","CONTROLLED_ARTIFACT","OTHER"]},
+        "current_revision": {"type": "integer", "minimum": 0},
+        "expected_prior_revision": {"type": "integer", "minimum": 0},
+        "lifecycle_state": {"type": ["string","null"]},
+        "superseded": {"type": "boolean", "default": false}
+      }
+    },
+    "event_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_id", "idempotency_key", "event_occurred_at", "recorded_at"],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "command_id": {"type": ["string","null"]},
+        "idempotency_key": {"type": "string", "minLength": 1},
+        "root_trigger_event_id": {"type": ["string","null"]},
+        "episode_id": {"type": ["string","null"], "pattern": "^EPISODE-[A-Z0-9_-]+$"},
+        "parent_event_id": {"type": ["string","null"]},
+        "causal_generation": {"type": "integer", "minimum": 0, "default": 0},
+        "event_occurred_at": {"type": "string", "format": "date-time"},
+        "recorded_at": {"type": "string", "format": "date-time"},
+        "materially_new_basis": {"type": "boolean", "default": false},
+        "derived_event_class": {"type": ["string","null"], "enum": [null,"ROOT_TRIGGER","DERIVED_REMEDIATION_EVENT","NEW_MATERIAL_TRIGGER","DUPLICATE","REPLAY","OTHER"]},
+        "event_fingerprint": {"type": ["string","null"]}
+      }
+    },
+    "dependency_coverage": {
+      "type": ["object","null"],
+      "additionalProperties": false,
+      "required": ["status", "expected_domains", "assessed_domains"],
+      "properties": {
+        "status": {"type": "string", "enum": ["SUFFICIENT_FOR_CONTEXT","PARTIAL","UNKNOWN","STALE","NOT_APPLICABLE"]},
+        "expected_domains": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "assessed_domains": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "unassessed_domains": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "coverage_rationale": {"type": ["string","null"]},
+        "coverage_assessed_at": {"type": ["string","null"], "format": "date-time"}
+      }
+    },
+    "reassessment_episode": {
+      "type": ["object","null"],
+      "additionalProperties": false,
+      "required": ["episode_id", "state", "root_trigger_event_id", "decision_lineage_ref"],
+      "properties": {
+        "episode_id": {"type": "string", "pattern": "^EPISODE-[A-Z0-9_-]+$"},
+        "state": {"type": "string", "enum": ["OPEN","BLOCKED","REMEDIATION_IN_PROGRESS","RESOLVED_PENDING_CLOSURE","CLOSED","REOPENED"]},
+        "root_trigger_event_id": {"type": "string", "minLength": 1},
+        "decision_lineage_ref": {"type": "string", "minLength": 1},
+        "expected_remediation_refs": {"type": "array", "items": {"type": "string"}},
+        "evaluated_event_object_pairs": {"type": "array", "items": {"type": "string"}},
+        "merge_or_suppression_reason": {"type": ["string","null"]},
+        "accountable_owner": {"type": ["string","null"]},
+        "closure_evidence_refs": {"type": "array", "items": {"type": "string"}},
+        "reopen_reason": {"type": ["string","null"]}
+      }
+    },
+    "authority_and_hold": {
+      "type": ["object","null"],
+      "additionalProperties": false,
+      "properties": {
+        "actor_id": {"type": ["string","null"]},
+        "actor_role": {"type": ["string","null"]},
+        "authority_scope": {"type": ["string","null"]},
+        "active_holds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["hold_id", "hold_class", "scope", "status"],
+            "properties": {
+              "hold_id": {"type": "string", "minLength": 1},
+              "hold_class": {"type": "string", "enum": ["SAFETY","QUALITY","REGULATORY","LEGAL","SECURITY","DATA_RIGHTS","OTHER"]},
+              "scope": {"type": "string", "minLength": 1},
+              "status": {"type": "string", "enum": ["ACTIVE","RELEASED","EXPIRED","SUPERSEDED"]},
+              "authority_basis": {"type": ["string","null"]},
+              "release_condition": {"type": ["string","null"]}
+            }
+          }
+        },
+        "transition_result": {"type": ["string","null"], "enum": [null,"APPLIED","REJECTED_STALE","MERGED_NONCONFLICTING","HOLD_CONFLICT","ESCALATED"]}
+      }
+    },
+    "authorization_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["principal_id", "roles", "authorized_tenant_id", "policy_decision"],
+      "properties": {
+        "principal_id": {"type": "string", "minLength": 1},
+        "roles": {"type": "array", "items": {"type": "string"}},
+        "authorized_tenant_id": {"type": "string", "minLength": 1},
+        "policy_decision": {"type": "string", "enum": ["ALLOW","DENY","CONDITIONAL","INDETERMINATE"]},
+        "purpose_of_use": {"type": ["string","null"]},
+        "external_call_allowed": {"type": "boolean", "default": false}
+      }
+    },
+    "snapshot_integrity": {
+      "type": ["object","null"],
+      "additionalProperties": false,
+      "properties": {
+        "historical_reconstruction_status": {"type": "string", "enum": ["RECONSTRUCTABLE","PARTIAL","HISTORICAL_RECONSTRUCTION_LIMITED","NOT_APPLICABLE"]},
+        "source_id": {"type": ["string","null"]},
+        "source_version": {"type": ["string","null"]},
+        "source_hash": {"type": ["string","null"], "pattern": "^[a-fA-F0-9]{64}$"},
+        "snapshot_ref": {"type": ["string","null"]},
+        "retrieved_at": {"type": ["string","null"], "format": "date-time"},
+        "transformation_ref": {"type": ["string","null"]},
+        "rights_or_retention_limitations": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "human_review": {
+      "type": ["object","null"],
+      "additionalProperties": false,
+      "properties": {
+        "review_required": {"type": "boolean"},
+        "reviewer_id": {"type": ["string","null"]},
+        "reviewer_scope_valid": {"type": ["boolean","null"]},
+        "material_evidence_refs_reviewed": {"type": "array", "items": {"type": "string"}},
+        "unresolved_issue_refs_addressed": {"type": "array", "items": {"type": "string"}},
+        "override_basis": {"type": ["string","null"]},
+        "review_disposition": {"type": ["string","null"], "enum": [null,"ACCEPT","ACCEPT_WITH_LIMITATIONS","REJECT","DEFER","ESCALATE","INSUFFICIENT_REVIEW_BASIS"]}
+      }
+    },
+    "processing_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "mandatory_side_effects_complete", "reconciliation_required"],
+      "properties": {
+        "status": {"type": "string", "enum": ["NOT_STARTED","IN_PROGRESS","COMPLETED","FAILED_RETRYABLE","FAILED_TERMINAL","DUPLICATE","COMPENSATION_REQUIRED","RECONCILIATION_REQUIRED"]},
+        "mandatory_side_effects_complete": {"type": "boolean"},
+        "reconciliation_required": {"type": "boolean"},
+        "reconciliation_ref": {"type": ["string","null"]},
+        "derived_event_refs": {"type": "array", "items": {"type": "string"}},
+        "retry_count": {"type": "integer", "minimum": 0, "default": 0}
+      }
+    },
+    "operational_burden": {
+      "type": ["object","null"],
+      "additionalProperties": false,
+      "properties": {
+        "manual_fields_added": {"type": "integer", "minimum": 0},
+        "derived_fields": {"type": "integer", "minimum": 0},
+        "exception_review_items": {"type": "integer", "minimum": 0},
+        "risk_reduction_rationale": {"type": ["string","null"]},
+        "existing_system_owner_ref": {"type": ["string","null"]}
+      }
+    },
+    "audit_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "dependency_coverage": {
+            "type": "object",
+            "properties": {"status": {"enum": ["PARTIAL","UNKNOWN","STALE"]}},
+            "required": ["status"]
+          }
+        },
+        "required": ["dependency_coverage"]
+      },
+      "then": {
+        "description": "Partial/unknown/stale coverage must not be interpreted by consuming workflows as NO_IMPACT. Semantic enforcement is required outside JSON Schema."
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "processing_state": {
+            "properties": {"status": {"const": "COMPLETED"}},
+            "required": ["status"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "processing_state": {
+            "properties": {
+              "mandatory_side_effects_complete": {"const": true},
+              "reconciliation_required": {"const": false}
+            }
+          }
+        }
+      }
+    }
+  ]
+}
