@@ -15,7 +15,8 @@
 **Dependency Contract:** ARC-DDG-SCHEMA-001 v1.0  
 **Related Workflow:** ARC-PCDI-001 v1.0  
 **Related ADR:** ADR-0007  
-**Machine-Readable Contract:** `schemas/regulatory-dependency-reassessment-engine/ARC-RDRE-001_Regulatory_Dependency_and_Reassessment_Engine.schema.json`
+**Machine-Readable Contract:** `schemas/regulatory-dependency-reassessment-engine/ARC-RDRE-001_Regulatory_Dependency_and_Reassessment_Engine.schema.json`  
+**Repository Target:** `docs/workflows/ARC-RDRE-001_Archemedica_Regulatory_Dependency_and_Reassessment_Engine_v1.0.md`
 
 > **Control statement:** RDRE is a governed reassessment engine for controlled regulatory source/version changes. It is not a regulatory-news monitor, legal-opinion generator, compliance system, submission engine, or autonomous regulatory decision-maker.
 
@@ -97,7 +98,7 @@ Classify the source as one of:
 - `SUPERSEDED`
 - `UNKNOWN`
 
-The source status must remain visible through reassessment. A draft or nonbinding source may still matter, but its force and limits cannot be laundered into a binding obligation.
+The source status and regulatory force must remain visible through reassessment. A draft or nonbinding source may still matter, but its force and limits cannot be laundered into a binding obligation. The reviewer must record why the authority and force classification was accepted or why human judgment remains required.
 
 ### Stage 3 - Change Assessment
 
@@ -292,6 +293,17 @@ Measure:
 
 No threshold is pre-claimed.
 
+## 10. Machine-Readable Contract
+
+Companion JSON Schema:
+
+`schemas/regulatory-dependency-reassessment-engine/ARC-RDRE-001_Regulatory_Dependency_and_Reassessment_Engine.schema.json`
+
+SHA-256 of companion schema at controlled generation:
+`042951085fe9d095585faecb007007c5362bc692f20bd8be49ac87feaabfe7c7`
+
+The JSON Schema validates structural syntax. It does not prove source authority, jurisdiction applicability, regulatory correctness, legal sufficiency, compliance, validation, or regulator acceptance.
+
 # Appendix A - ADR-0007 Tier-3 Adversarial Review
 
 ## A1. Problem Test
@@ -393,7 +405,7 @@ This document defines a controlled workflow design and machine-readable contract
 ## Change History
 
 | Version | Date | Change | Disposition |
-|---|---|---|---|
+|---|---|---|
 | 1.0 | 2026-08-30 | Initial RDRE workflow and ADR-0007 Tier-3 review | PILOT - BUILD CONTROLLED MVP |
 
 **END OF CONTROLLED DOCUMENT**
