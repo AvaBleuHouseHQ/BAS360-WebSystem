@@ -1,0 +1,805 @@
+{
+  "execution_timestamp": "2026-08-30T12:00:00Z",
+  "fixture": {
+    "fixture_id": "FIX-ARC-SYS-HARDEN-001-ONC-AMEND-001",
+    "fixture_version": "1.0",
+    "path": "tests/fixtures/ARC-SYS-HARDEN-001_oncology_protocol_amendment_fixture.json",
+    "sha256": "61953b38c8774f0471b3e46b8d0010df35e42108dcf36fb51935796e7e0ae204"
+  },
+  "harness_id": "ARC-SYS-HARDEN-001-E2E-HARNESS",
+  "harness_version": "1.0.0",
+  "iq_results": [
+    {
+      "actual": {
+        "platform": "macOS-26.3.1-arm64-arm-64bit-Mach-O",
+        "python_version": "3.14.3",
+        "utc_now_fixed_for_determinism": "2026-08-30T12:00:00Z"
+      },
+      "expected": "Python 3 available; operating system and interpreter recorded.",
+      "iq_id": "ARC-IQ-001",
+      "pass_fail": "PASS",
+      "title": "Execution environment recorded"
+    },
+    {
+      "actual": {
+        "missing": [],
+        "sha256": {
+          "docs/adversarial/ARC-AST-001_DDG_Dependency_Coverage_Fault_Injection_v1.0.md": "52d7ae8c77dd9db32c13f54ba16007d4da012a4b74ad99e704d8262b0634cf28",
+          "docs/adversarial/ARC-AST-002_Cross_Engine_Reassessment_Loop_Fault_Injection_v1.0.md": "6a58b094bc4c0028d38997a049a2074ea1367c17a9691ac6747d687ef098b0cf",
+          "docs/adversarial/ARC-AST-003_Authority_Concurrency_and_State_Collision_Fault_Injection_v1.0.md": "e3b80c6df3af37787e91efd3d1fa29be351bb65ac85b8be10f2d71d34235e4c0",
+          "docs/adversarial/ARC-AST-004_Tenant_Authorization_and_Graph_Traversal_Breach_Fault_Injection_v1.0.md": "65967b923aa4e987294a4945808aeafd80b51bdef7d8ae184aa130dda372e802",
+          "docs/adversarial/ARC-AST-005_Event_Replay_Outage_and_Partial_Failure_Fault_Injection_v1.0.md": "43330a1022fd45686cd9bc9f3ca2beb2b55abb2d21a4211014f1be5032054d3c",
+          "docs/adversarial/ARC-AST-006_Source_of_Truth_Divergence_and_Snapshot_Drift_Fault_Injection_v1.0.md": "33120cae642d585cf7b651d1fca3b31ba0f22a8c12f0d09959f977c896a9eed3",
+          "docs/adversarial/ARC-AST-007_Human_Control_Rubber_Stamp_and_Bypass_Fault_Injection_v1.0.md": "549f832d7c752328726f0007d79e1296d315519ffc2f5883a9112049161d6314",
+          "docs/adversarial/ARC-AST-008_Operational_Burden_and_Competitive_Null_Hypothesis_Fault_Injection_v1.0.md": "bea93a9b789627b3dcd6cdab058b84700a2da2460b1c49c7bd9da41d9f074384",
+          "docs/adversarial/ARC-AST-009_Integrated_Red_Team_Lessons_Learned_v1.0.md": "86afbac5ffade5e75570650913847bffca673f82061507487d23bf062c6292c8",
+          "docs/architecture/ARC-SYS-HARDEN-001_Archemedica_Integrated_Control_Plane_Hardening_v1.0.md": "02ed0841ba1ae6c675cdaa29768b37cb68a2d4494939013b5216c4ecb18f3c61",
+          "docs/governance/ARC-STD-001_Archemedica_Adversarial_Architecture_and_Build_Decision_Standard_v1.0.md": "a8bad0e758d964a092da4230cb1f30599f03e49ce60752fd488535eaea50d361",
+          "docs/verification/ARC-CC-001_ARC-SYS-HARDEN-001_Deterministic_Adversarial_Harness_Change_Control_v1.0.md": "bc8a5e2c6f60977efcef24d20bd021d1e0d768704cfa9886f34f0eba981aaeeb",
+          "docs/verification/ARC-SDLC-VERIFY-001_ARC-SYS-HARDEN-001_IQ_OQ_PQ_Protocol_Report_v1.0.md": "675d99ed9ec6a5797619190234228b02e84d9a3d1371f2767cd1e1947e4fd40b",
+          "schemas/integrated-control-plane/ARC-SYS-HARDEN-001_Integrated_Control_Plane.schema.json": "b6c4b911c41c9cc68cbd8aec9a76e1642457de2ffd4e45c6d218c5e7139f6d4a",
+          "tests/fixtures/ARC-SYS-HARDEN-001_oncology_protocol_amendment_fixture.json": "61953b38c8774f0471b3e46b8d0010df35e42108dcf36fb51935796e7e0ae204",
+          "tools/archemedica_integrated_harness.py": "49aedeac5eba4d2b27f087e7ed8d18d9e5ed95cd2873011e106c701d71cbb394"
+        }
+      },
+      "expected": "All required controlled artifacts exist and have SHA-256 hashes captured.",
+      "iq_id": "ARC-IQ-002",
+      "pass_fail": "PASS",
+      "title": "Controlled artifact and fixture integrity"
+    },
+    {
+      "actual": {
+        "branch": "main",
+        "head_commit": "4218599569c1c2fd97bc90bdda3cd3d97929de62",
+        "status_short": ""
+      },
+      "expected": "Git HEAD and working-tree status captured for traceability.",
+      "iq_id": "ARC-IQ-003",
+      "pass_fail": "PASS",
+      "title": "Repository version identity captured"
+    },
+    {
+      "actual": {
+        "acceptance_criteria_keys": [
+          "all_16_mandatory_scenarios_pass",
+          "decision_reconstruction_minutes_max",
+          "go_recommendation_requires_no_unresolved_critical_defects",
+          "manual_metadata_entries_max",
+          "must_not_claim_gxp_validation",
+          "must_not_claim_part11_compliance",
+          "must_preserve_historical_basis"
+        ],
+        "baseline_name": "Strong incumbent process baseline",
+        "fixture_id": "FIX-ARC-SYS-HARDEN-001-ONC-AMEND-001"
+      },
+      "expected": "Fixture includes explicit PQ acceptance criteria and strong baseline data.",
+      "iq_id": "ARC-IQ-004",
+      "pass_fail": "PASS",
+      "title": "Fixture acceptance criteria present"
+    }
+  ],
+  "repository": {
+    "branch": "main",
+    "head_commit": "4218599569c1c2fd97bc90bdda3cd3d97929de62",
+    "status_short_at_execution": ""
+  },
+  "scenario_results": [
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-DDG-IMPACT-001"
+        ],
+        "details": {
+          "coverage_status": "UNKNOWN",
+          "discovered_dependencies": []
+        },
+        "state": "NO_IMPACT"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-001",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-001",
+      "expected_state": "IMPACT_NOT_ESTABLISHED_HUMAN_REVIEW_REQUIRED",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-COVERAGE-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "assessed_domains": [
+            "edc",
+            "eligibility",
+            "informed_consent",
+            "regulatory",
+            "safety",
+            "site_training",
+            "vendor"
+          ],
+          "coverage_status": "PARTIAL",
+          "expected_domains": [
+            "edc",
+            "eligibility",
+            "informed_consent",
+            "regulatory",
+            "safety",
+            "site_training",
+            "statistics",
+            "vendor"
+          ],
+          "prohibited_state_blocked": "NO_IMPACT",
+          "unassessed_domains": [
+            "statistics"
+          ]
+        },
+        "state": "IMPACT_NOT_ESTABLISHED_HUMAN_REVIEW_REQUIRED"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "NO_IMPACT",
+      "related_findings": [
+        "ARC-AST-001"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-01",
+      "residual_risk": "Coverage check is deterministic for controlled domains; semantic completeness of real-world domains remains a pilot risk.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-001",
+      "title": "Missing true DDG edge with zero-result impact search."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-DDG-FALSE-HIGH-001"
+        ],
+        "details": {
+          "edge": [
+            "DER-ONC-AMEND-042",
+            "ART-LAB-MANUAL-042",
+            "HIGH",
+            "laboratory"
+          ],
+          "reassessment_count": 5
+        },
+        "state": "REASSESSMENT_CASCADE"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-002",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-002",
+      "expected_state": "FALSE_POSITIVE_CONTAINED_REVIEW_REQUIRED",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-FALSE-HIGH-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "coverage_status": "SUFFICIENT_FOR_CONTEXT",
+          "edge": [
+            "DER-ONC-AMEND-042",
+            "ART-LAB-MANUAL-042",
+            "HIGH",
+            "laboratory"
+          ],
+          "human_review_reason": "unexpected high materiality edge outside amendment impact domain",
+          "reassessment_count": 1
+        },
+        "state": "FALSE_POSITIVE_CONTAINED_REVIEW_REQUIRED"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "REASSESSMENT_CASCADE",
+      "related_findings": [
+        "ARC-AST-001",
+        "ARC-AST-008"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-02",
+      "residual_risk": "False positives can still consume reviewer time; burden monitoring remains required.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-002",
+      "title": "False HIGH edge causing excessive reassessment."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-LOOP-001",
+          "LEGACY-LOOP-002",
+          "LEGACY-LOOP-003"
+        ],
+        "details": {
+          "episodes_created": 3,
+          "terminated": false
+        },
+        "state": "REASSESSMENT_LOOP"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-003",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-003",
+      "expected_state": "EPISODE_CLOSED_NO_LOOP",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-EPISODE-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "derived_events": [
+            "EVT-PCDI-REMEDIATE-001",
+            "EVT-ARTIFACT-CHANGED-001"
+          ],
+          "episode_id": "EPISODE-ONC-AMEND-042-EIG-CONFLICT",
+          "episodes_created": 1,
+          "merge_or_suppression_reason": "derived remediation inside existing episode",
+          "root_trigger_event_id": "EVT-EIG-CONFLICT-001",
+          "terminated": true
+        },
+        "state": "EPISODE_CLOSED_NO_LOOP"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "REASSESSMENT_LOOP",
+      "related_findings": [
+        "ARC-AST-002"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-03",
+      "residual_risk": "Loop termination proven for deterministic fixture; production async execution still requires implementation-level tests.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-003",
+      "title": "EIG conflict -> DER -> PCDI remediation loop terminates in one causal episode."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-RDRE-ARTIFACT-001",
+          "LEGACY-DDG-ARTIFACT-002"
+        ],
+        "details": {
+          "reopen_count": 2,
+          "root_causes": 1
+        },
+        "state": "SELF_REOPENED"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-004",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-004",
+      "expected_state": "DERIVED_RDRE_REMEDIATION_TRACKED_WITHIN_EPISODE",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-RDRE-EPISODE-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "derived_event_class": "DERIVED_REMEDIATION_EVENT",
+          "episode_id": "EPISODE-ONC-AMEND-042-RDRE-CHANGE",
+          "materially_new_basis": false,
+          "reopen_count": 0
+        },
+        "state": "DERIVED_RDRE_REMEDIATION_TRACKED_WITHIN_EPISODE"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "SELF_REOPENED",
+      "related_findings": [
+        "ARC-AST-002"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-04",
+      "residual_risk": "Materially-new-basis classification will need SME review in real workflows.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-004",
+      "title": "RDRE remediation artifact does not self-reopen absent new basis."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-STATE-REG-001",
+          "LEGACY-STATE-SAF-002"
+        ],
+        "details": {
+          "active_safety_hold_ignored": true,
+          "final_state": "REGULATORY_REAFFIRMED"
+        },
+        "state": "LAST_WRITE_WINS_AUTHORIZED"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-005",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-005",
+      "expected_state": "HOLD_CONFLICT",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-AUTHORITY-RACE-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "last_write_wins_used": false,
+          "regulatory_transition": "REAFFIRM_REQUESTED",
+          "safety_transition": "HOLD_ACTIVE",
+          "transition_result": "HOLD_CONFLICT"
+        },
+        "state": "HOLD_CONFLICT"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "LAST_WRITE_WINS_AUTHORIZED",
+      "related_findings": [
+        "ARC-AST-003"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-05",
+      "residual_risk": "Authority scopes are fixture-defined; customer SOP mapping remains needed.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-005",
+      "title": "Regulatory reaffirmation races Safety hold."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-DER-REV7-APPROVAL",
+          "LEGACY-DER-REV8-ISSUED"
+        ],
+        "details": {
+          "predecessor_revision": 7,
+          "successor_revision": 8
+        },
+        "state": "DUAL_CURRENT_DECISIONS"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-006",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-006",
+      "expected_state": "REJECTED_STALE",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-STALE-PREDECESSOR-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "attempted_revision": 7,
+          "current_revision": 8,
+          "expected_prior_revision": 7,
+          "transition_result": "REJECTED_STALE"
+        },
+        "state": "REJECTED_STALE"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "DUAL_CURRENT_DECISIONS",
+      "related_findings": [
+        "ARC-AST-003"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-06",
+      "residual_risk": "Revision logic must be implemented in persistent storage before production use.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-006",
+      "title": "Predecessor approval arrives after successor issuance."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-AUTH-GRAPH-001"
+        ],
+        "details": {
+          "leaked_tenant": "TENANT-SPONSOR-B",
+          "visible_path_count": 1
+        },
+        "state": "TENANT_SIDE_CHANNEL_LEAK"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-007",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-007",
+      "expected_state": "AUTHORIZED_EMPTY_RESULT",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-TENANT-TRAVERSAL-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "count_side_channel_visible": false,
+          "foreign_tenant": "TENANT-SPONSOR-B",
+          "request_tenant": "TENANT-SPONSOR-A",
+          "shared_source_bridge_blocked": true,
+          "visible_path_count": 0
+        },
+        "state": "AUTHORIZED_EMPTY_RESULT"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "TENANT_SIDE_CHANNEL_LEAK",
+      "related_findings": [
+        "ARC-AST-004"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-07",
+      "residual_risk": "Synthetic proof only; real indexes/caches need security testing.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-007",
+      "title": "Cross-tenant traversal through shared regulatory source leaks nothing."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-CACHE-001"
+        ],
+        "details": {
+          "cache_key_fields": [
+            "source_id"
+          ],
+          "missing_policy_context": true
+        },
+        "state": "PRIVILEGE_DOWNGRADE_CACHE_LEAK"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-008",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-008",
+      "expected_state": "CACHE_MISS_REAUTHORIZE",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-CACHE-AUTH-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "cache_key_fields": [
+            "tenant_id",
+            "policy_context_id",
+            "authorization_version",
+            "principal_id",
+            "purpose_of_use"
+          ],
+          "lower_privilege_result_returned": false,
+          "policy_decision": "DENY"
+        },
+        "state": "CACHE_MISS_REAUTHORIZE"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "PRIVILEGE_DOWNGRADE_CACHE_LEAK",
+      "related_findings": [
+        "ARC-AST-004"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-08",
+      "residual_risk": "Cache key policy must be enforced consistently across services.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-008",
+      "title": "Elevated cached graph result cannot be returned to lower privilege."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-EVENT-001",
+          "LEGACY-EVENT-001-REPLAY"
+        ],
+        "details": {
+          "business_effect_count": 2
+        },
+        "state": "DUPLICATE_BUSINESS_EFFECT"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-009",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-009",
+      "expected_state": "DUPLICATE_SUPPRESSED_ONE_BUSINESS_EFFECT",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-IDEMPOTENCY-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "business_effect_count": 1,
+          "first_delivery_created_effect": true,
+          "idempotency_key": "IDEMP-EVT-ONC-REPLAY-001",
+          "second_delivery_state": "DUPLICATE"
+        },
+        "state": "DUPLICATE_SUPPRESSED_ONE_BUSINESS_EFFECT"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "DUPLICATE_BUSINESS_EFFECT",
+      "related_findings": [
+        "ARC-AST-005"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-09",
+      "residual_risk": "Durability is simulated; production message store verification remains required.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-009",
+      "title": "Duplicate event/replay produces one business effect."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-TXN-STATE-WRITE"
+        ],
+        "details": {
+          "derived_event_published": false,
+          "state": "COMPLETE"
+        },
+        "state": "PHANTOM_COMPLETE"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-010",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-010",
+      "expected_state": "RECONCILIATION_REQUIRED",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-RECONCILIATION-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "derived_event_published": false,
+          "mandatory_side_effects_complete": false,
+          "reconciliation_ref": "RECON-ONC-AMEND-042-001",
+          "state_write_committed": true,
+          "visible_ready": false
+        },
+        "state": "RECONCILIATION_REQUIRED"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "PHANTOM_COMPLETE",
+      "related_findings": [
+        "ARC-AST-005"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-10",
+      "residual_risk": "Recovery worker behavior is specified but not load-tested.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-010",
+      "title": "Crash between state write and derived-event publication reconciles."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-SOURCE-URL-001"
+        ],
+        "details": {
+          "historical_reconstruction_status": "LIMITED",
+          "stored_hash": null
+        },
+        "state": "LIVE_SOURCE_ONLY"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-011",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-011",
+      "expected_state": "RECONSTRUCTABLE",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-SNAPSHOT-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "historical_reconstruction_status": "RECONSTRUCTABLE",
+          "live_source_changed": true,
+          "source_hash": "6550ef4b8b6c0b85c8f20999fd9805d80e5a17fc3d2f1f069d8412ab0e1bd7a5",
+          "source_id": "EVID-SCI-ONC-001",
+          "source_version": "v2026-08-01"
+        },
+        "state": "RECONSTRUCTABLE"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "LIVE_SOURCE_ONLY",
+      "related_findings": [
+        "ARC-AST-006"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-11",
+      "residual_risk": "Snapshot rights and retention limits must be assessed source by source.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-011",
+      "title": "Live source changes after decision; historical basis remains reconstructable."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-EIG-PASS-001"
+        ],
+        "details": {
+          "assessment_binding": "friendly_source_name",
+          "source_changed": true
+        },
+        "state": "STALE_PASS_DISPLAYED_CURRENT"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-012",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-012",
+      "expected_state": "STALE_REASSESSMENT_REQUIRED",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-EIG-STALE-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "changed_source_content": true,
+          "current_state": "STALE",
+          "displayed_as_current": false,
+          "prior_assessment": "PASS"
+        },
+        "state": "STALE_REASSESSMENT_REQUIRED"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "STALE_PASS_DISPLAYED_CURRENT",
+      "related_findings": [
+        "ARC-AST-006"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-12",
+      "residual_risk": "Real EIG display layer must bind status to source hash/version.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-012",
+      "title": "Prior EIG PASS cannot display against changed source content as current."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-HUMAN-CLICK-001"
+        ],
+        "details": {
+          "override_basis": "",
+          "unresolved_conflicts": [
+            "EVID-SCI-ONC-001"
+          ]
+        },
+        "state": "APPROVED_WITH_UNRESOLVED_CONFLICT"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-013",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-013",
+      "expected_state": "INSUFFICIENT_REVIEW_BASIS",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-HUMAN-REVIEW-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "override_basis": "",
+          "review_disposition": "INSUFFICIENT_REVIEW_BASIS",
+          "review_required": true,
+          "reviewer_scope_valid": true,
+          "unresolved_issue_refs_addressed": []
+        },
+        "state": "INSUFFICIENT_REVIEW_BASIS"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "APPROVED_WITH_UNRESOLVED_CONFLICT",
+      "related_findings": [
+        "ARC-AST-007"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-13",
+      "residual_risk": "Controls detect missing basis but cannot prove reviewer cognition.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-013",
+      "title": "High-risk reviewer rubber-stamps unresolved conflict; gate detects insufficient review basis."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-EMERGENCY-001"
+        ],
+        "details": {
+          "retrospective_obligations_open": 3,
+          "visible_complete": true
+        },
+        "state": "EMERGENCY_COMPLETE_WITH_OPEN_OBLIGATIONS"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-014",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-014",
+      "expected_state": "EMERGENCY_RECONCILIATION_REQUIRED",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-EMERGENCY-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "emergency_path_used": true,
+          "immediate_safety_action_allowed": true,
+          "reconciliation_required": true,
+          "retrospective_obligations_open": 3,
+          "visible_complete": false
+        },
+        "state": "EMERGENCY_RECONCILIATION_REQUIRED"
+      },
+      "pass_fail": "PASS",
+      "phase": "OQ",
+      "prohibited_state": "EMERGENCY_COMPLETE_WITH_OPEN_OBLIGATIONS",
+      "related_findings": [
+        "ARC-AST-007",
+        "ARC-AST-005"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-14",
+      "residual_risk": "Emergency SOP and retrospective due-date enforcement remain outside this fixture.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-OQ-014",
+      "title": "Emergency path is used and retrospective obligations reconcile."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "LEGACY-OPS-BURDEN-001"
+        ],
+        "details": {
+          "manual_metadata_entries": 29
+        },
+        "state": "DUPLICATE_MANUAL_METADATA_REQUIRED"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-015",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-015",
+      "expected_state": "EVIDENCE_ONCE_PROJECT_MANY_ACCEPTABLE",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-BURDEN-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "baseline_manual_metadata_entries": 29,
+          "derived_fields": 42,
+          "exception_review_items": 5,
+          "manual_metadata_entries": 6
+        },
+        "state": "EVIDENCE_ONCE_PROJECT_MANY_ACCEPTABLE"
+      },
+      "pass_fail": "PASS",
+      "phase": "PQ",
+      "prohibited_state": "DUPLICATE_MANUAL_METADATA_REQUIRED",
+      "related_findings": [
+        "ARC-AST-008",
+        "ARC-AST-009"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-15",
+      "residual_risk": "Representative burden passes fixture threshold; broader user-study evidence is still required.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-PQ-001",
+      "title": "Full protocol amendment can be processed without duplicate manual metadata entry."
+    },
+    {
+      "baseline_before": {
+        "audit_refs": [
+          "BASELINE-CHECKLIST-001"
+        ],
+        "details": {
+          "decision_reconstruction_minutes": 95,
+          "detected_mandatory_scenarios": 10,
+          "missed_or_ambiguous_scenarios": [
+            "derived remediation self-loop",
+            "cached privilege downgrade",
+            "historical source drift binding",
+            "duplicate replay business effect",
+            "predecessor approval after successor",
+            "tenant side-channel count leakage"
+          ]
+        },
+        "state": "BASELINE_PARTIAL_RECONSTRUCTION"
+      },
+      "corrective_action_id": "CA-ARC-SYS-HARDEN-001-016",
+      "deviation_id": "DEV-ARC-SYS-HARDEN-001-016",
+      "expected_state": "ARCHEMEDICA_OUTPERFORMS_BASELINE_WITH_RESIDUAL_PMF_RISK",
+      "hardened_after": {
+        "audit_refs": [
+          "AUD-BASELINE-COMPARE-001",
+          "CTRL-ARC-SYS-HARDEN-001"
+        ],
+        "details": {
+          "baseline_decision_reconstruction_minutes": 95,
+          "baseline_detected_mandatory_scenarios": 10,
+          "baseline_manual_metadata_entries": 29,
+          "decision_reconstruction_minutes": 38,
+          "mandatory_scenarios_detected": 16,
+          "manual_metadata_entries": 6,
+          "strong_baseline_still_competitive": true
+        },
+        "state": "ARCHEMEDICA_OUTPERFORMS_BASELINE_WITH_RESIDUAL_PMF_RISK"
+      },
+      "pass_fail": "PASS",
+      "phase": "PQ",
+      "prohibited_state": "BASELINE_PARTIAL_RECONSTRUCTION",
+      "related_findings": [
+        "ARC-AST-008",
+        "ARC-AST-009"
+      ],
+      "requirement_id": "ARC-SYS-HARDEN-001-MV-16",
+      "residual_risk": "Strong baseline is not eliminated; product-market value remains conditional.",
+      "retest_result": "PASS",
+      "scenario_id": "ARC-PQ-002",
+      "title": "Strong checklist + incumbent systems baseline comparison."
+    }
+  ],
+  "summary": {
+    "claim_boundary": "This evidence does not establish GxP validation, 21 CFR Part 11 compliance, regulator acceptance, or production qualification.",
+    "go_no_go": "CONDITIONAL GO FOR CONTROLLED PILOT HARNESS ONLY",
+    "iq": {
+      "failed": 0,
+      "passed": 4,
+      "status": "PASS"
+    },
+    "mandatory_scenarios": {
+      "failed": 0,
+      "passed": 16,
+      "total": 16
+    },
+    "oq": {
+      "failed": 0,
+      "passed": 14,
+      "status": "PASS"
+    },
+    "pq": {
+      "failed": 0,
+      "passed": 2,
+      "status": "PASS"
+    },
+    "unresolved_defects": []
+  }
+}
