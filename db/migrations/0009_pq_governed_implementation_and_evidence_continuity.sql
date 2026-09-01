@@ -4,19 +4,16 @@
 
 BEGIN;
 
--- Decision-time evidence links must be unique so one canonical snapshot is reused.
 CREATE UNIQUE INDEX IF NOT EXISTS uq_controlled_evidence_link_once
 ON controlled_evidence_link(tenant_id, evs_id, target_type, target_id, relationship_type);
 
--- Decision evidence is explicitly linked to the causal episode and integrated risk.
 ALTER TABLE decision_evidence_record
-    ADD COLUMN IF NOT EXISTS causal_episode_id uuid NULL REFERENCES reassessment_episode(episode_id),
+    ADD COLUMN IF NOT EXISTS causal_episode_id uuid NULL REFERENCES reassessment_episode(rae_id),
     ADD COLUMN IF NOT EXISTS risk_id uuid NULL REFERENCES integrated_risk(risk_id);
 
 CREATE INDEX IF NOT EXISTS idx_der_episode ON decision_evidence_record(tenant_id, causal_episode_id);
 CREATE INDEX IF NOT EXISTS idx_der_risk ON decision_evidence_record(tenant_id, risk_id);
 
--- Tenant-integrity checks for the newly introduced DER relationships.
 CREATE OR REPLACE FUNCTION archemedica_security.assert_der_extended_refs_same_tenant()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -26,7 +23,7 @@ AS $$
 BEGIN
     IF NEW.causal_episode_id IS NOT NULL AND NOT EXISTS (
         SELECT 1 FROM public.reassessment_episode x
-        WHERE x.episode_id=NEW.causal_episode_id AND x.tenant_id=NEW.tenant_id
+        WHERE x.rae_id=NEW.causal_episode_id AND x.tenant_id=NEW.tenant_id
     ) THEN
         RAISE EXCEPTION 'ARC_CROSS_TENANT_DER_EPISODE_REFERENCE' USING ERRCODE='42501';
     END IF;
@@ -45,8 +42,6 @@ CREATE TRIGGER trg_der_extended_refs_same_tenant
 BEFORE INSERT OR UPDATE OF tenant_id,causal_episode_id,risk_id ON decision_evidence_record
 FOR EACH ROW EXECUTE FUNCTION archemedica_security.assert_der_extended_refs_same_tenant();
 
--- Governed implementation-state transition. READY/EFFECTIVE require objective evidence
--- and are blocked by an open hold on the controlling DER.
 CREATE OR REPLACE FUNCTION transition_implementation_state(
     p_implementation_state_id uuid,
     p_expected_revision bigint,
