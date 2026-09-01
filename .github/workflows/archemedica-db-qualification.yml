@@ -1,0 +1,64 @@
+name: Archemedica Database Qualification
+
+on:
+  push:
+    paths:
+      - 'db/migrations/**'
+      - 'tests/db/**'
+      - '.github/workflows/archemedica-db-qualification.yml'
+  pull_request:
+    paths:
+      - 'db/migrations/**'
+      - 'tests/db/**'
+      - '.github/workflows/archemedica-db-qualification.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  arc-persist-qual-001:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: archemedica_qual
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d archemedica_qual"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGDATABASE: archemedica_qual
+      PGUSER: postgres
+      PGPASSWORD: postgres
+
+    steps:
+      - name: Checkout controlled configuration
+        uses: actions/checkout@v4
+
+      - name: Record qualification configuration
+        run: |
+          echo "ARC-PERSIST-QUAL-001"
+          echo "GITHUB_SHA=${GITHUB_SHA}"
+          psql --version
+
+      - name: Apply controlled migrations 0001-0007
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in $(find db/migrations -maxdepth 1 -type f -name '*.sql' | sort); do
+            echo "Applying ${f}"
+            psql -v ON_ERROR_STOP=1 -f "$f"
+          done
+
+      - name: Execute ARC-PERSIST-QUAL-001
+        run: psql -v ON_ERROR_STOP=1 -f tests/db/ARC-PERSIST-QUAL-001_database_qualification.sql
