@@ -1,0 +1,55 @@
+name: Archemedica Database PQ
+
+on:
+  push:
+    paths:
+      - 'db/migrations/**'
+      - 'tests/db/ARC-PERSIST-PQ-003_gate.sh'
+      - '.github/workflows/archemedica-db-pq.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  arc-persist-pq-003:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: archemedica_pq
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d archemedica_pq"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGDATABASE: archemedica_pq
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    steps:
+      - name: Checkout controlled configuration
+        uses: actions/checkout@v4
+      - name: Record PQ configuration
+        run: |
+          echo "ARC-PERSIST-PQ-003"
+          echo "GITHUB_SHA=${GITHUB_SHA}"
+          psql --version
+      - name: Apply controlled migrations
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in $(find db/migrations -maxdepth 1 -type f -name '*.sql' | sort); do
+            echo "Applying ${f}"
+            psql -v ON_ERROR_STOP=1 -f "$f"
+          done
+      - name: Execute ARC-PERSIST-PQ-003 gate
+        shell: bash
+        run: bash tests/db/ARC-PERSIST-PQ-003_gate.sh
