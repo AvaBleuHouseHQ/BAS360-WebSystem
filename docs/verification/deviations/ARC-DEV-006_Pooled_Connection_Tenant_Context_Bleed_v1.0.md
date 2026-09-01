@@ -1,51 +1,62 @@
 # ARC-DEV-006 — Pooled Connection Tenant Context Bleed
 
-**Version:** 1.0  
-**Status:** CONTROLLED — OPEN / CORRECTIVE ACTION REQUIRED  
+**Version:** 1.1  
+**Status:** CONTROLLED — CLOSED / CORRECTED AND RETESTED  
 **System:** Archemedica / BAS360-WebSystem  
 **Author / Document Owner:** Cassandra Harrison  
-**Date:** 2026-09-01  
+**Date Opened:** 2026-09-01  
+**Date Closed:** 2026-09-01  
 **Source:** ARC-PERSIST-OQ-002 / OQ2-14  
-**Observed Run:** GitHub Actions `33524599328`, job `99912105063`
+**Initial Run:** GitHub Actions `33524599328`, job `99912105063`  
+**Corrective Migration:** `db/migrations/0008_operational_control_plane.sql`  
+**Corrective Migration Commit:** `5b79b8308fbbffdaedeef49a073ac1c0b8d48d87`  
+**Final Retest Run:** `33525332032`, job `99914588124`  
+**Final Retest Commit:** `ad9f4a5ce704ebf1df354628d0d7c35db533b3ab`
 
-## 1. Deviation
+## 1. Original Deviation
 
-The tenant authorization setting persisted at PostgreSQL session scope when a logical request boundary was simulated on a reused database connection. A subsequent request on the same pooled session could inherit the prior request's tenant context if application code failed to reset it.
+The initial tenant authorization setting persisted at PostgreSQL session scope when a logical request boundary was simulated on a reused database connection. A subsequent request on the same pooled session could inherit the prior request's tenant context if the application did not explicitly reset it.
 
-## 2. Risk
+The condition represented a HIGH multi-tenant confidentiality/integrity risk because otherwise-correct RLS policies could evaluate against stale tenant context.
 
-This defect creates a credible cross-tenant confidentiality/integrity risk in connection-pooled runtime architectures. RLS itself can behave correctly while still evaluating against the wrong inherited tenant context.
+## 2. Root Cause
 
-Severity is therefore **HIGH** for a multi-tenant SaaS control plane.
+The initial implementation permitted request context to be established using session-scoped custom PostgreSQL settings. Session scope is not an acceptable primary contract for pooled application connections.
 
-## 3. Root Cause
+## 3. Correction
 
-The initial persistence/security implementation allowed session-scoped context establishment via `set_config(..., false)`. That is adequate for isolated qualification statements but not an acceptable primary request contract for pooled application connections.
+Migration 0008 introduced the supported request entry point:
 
-## 4. Required Correction
+`archemedica_security.establish_request_context(tenant_id, actor_principal, correlation_id)`
 
-The supported runtime contract shall:
+The function:
 
-1. begin an explicit database transaction;
-2. set tenant, actor, correlation and authorization context transaction-locally (`SET LOCAL` / `set_config(..., true)` or an equivalent guarded helper);
-3. perform all tenant-scoped work inside that transaction;
-4. automatically discard the request context at COMMIT/ROLLBACK;
-5. reject tenant-scoped access without active context;
-6. prohibit arbitrary runtime callers from invoking lower-level context setters outside the controlled transaction-entry function;
-7. negatively test connection reuse after COMMIT and ROLLBACK.
+- validates required context;
+- verifies that the tenant exists and is active;
+- uses transaction-local PostgreSQL settings (`set_config(..., true)`);
+- requires tenant-scoped work to occur inside an explicit database transaction;
+- allows COMMIT or ROLLBACK to discard request context automatically.
 
-## 5. Retest
+The application/service layer must use this controlled transaction-local path and must not expose arbitrary SQL/GUC manipulation to end users.
 
-Corrective OQ must prove:
-- Tenant A request completes;
-- same physical session is reused;
-- no Tenant A context survives after COMMIT;
-- same after ROLLBACK;
-- access before establishing Tenant B context fails closed;
-- after Tenant B context is established transaction-locally, only Tenant B rows are visible.
+## 4. Corrective Retest
 
-## 6. Disposition
+OQ2-14 was rerun in the same physical psql session across logical requests:
 
-**OPEN — OQ gate remains failed until corrected and retested.**
+1. Tenant A transaction established controlled context and saw only Tenant A data.
+2. Tenant A transaction committed.
+3. Tenant-scoped access before a new context was established failed closed.
+4. Tenant B transaction then established its own context.
+5. Tenant B saw only Tenant B data.
 
-No production or pilot-release authorization is granted by this deviation record.
+Result:
+
+**PASS — `transaction-local context cleared across pooled logical requests`.**
+
+The final complete ARC-PERSIST-OQ-002 retest produced **16 PASS / 0 FAIL**.
+
+## 5. Closure
+
+**ARC-DEV-006 is CLOSED — CORRECTED AND RETESTED.**
+
+Closure applies only to the tested controlled PostgreSQL request-context behavior. It does not establish production security certification, customer-environment qualification, GxP validation, Part 11 compliance, or ISO conformity/certification.
