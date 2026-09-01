@@ -5,6 +5,7 @@ on:
     paths:
       - 'db/migrations/**'
       - 'tests/db/ARC-PERSIST-OQ-002_gate.sh'
+      - 'tests/db/ARC-PERSIST-OQ-002_gate_v1_1.sh'
       - '.github/workflows/archemedica-db-oq.yml'
   workflow_dispatch:
 
@@ -50,6 +51,6 @@ jobs:
             echo "Applying ${f}"
             psql -v ON_ERROR_STOP=1 -f "$f"
           done
-      - name: Execute ARC-PERSIST-OQ-002 gate
+      - name: Execute ARC-PERSIST-OQ-002 gate v1.1
         shell: bash
-        run: bash tests/db/ARC-PERSIST-OQ-002_gate.sh
+        run: bash tests/db/ARC-PERSIST-OQ-002_gate_v1_1.sh
