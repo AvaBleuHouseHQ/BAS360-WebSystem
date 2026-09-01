@@ -3,6 +3,7 @@
 -- ARC-PERSIST-QUAL-001
 -- Executable PostgreSQL qualification harness for controlled persistence foundation.
 -- Scope: migrations 0001-0007. Synthetic data only. Not production/GxP qualification.
+-- Corrective revision: ARC-DEV-005 removes invalid psql variable substitution from Q09.
 
 CREATE ROLE archemedica_runtime NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
 GRANT USAGE ON SCHEMA public, archemedica_security TO archemedica_runtime;
@@ -10,7 +11,6 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO archemedi
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO archemedica_runtime;
 GRANT EXECUTE ON FUNCTION transition_der_state(uuid,bigint,text,text,uuid) TO archemedica_runtime;
 
--- Stable synthetic identities.
 INSERT INTO tenant(tenant_id,tenant_key,name,status) VALUES
 ('10000000-0000-0000-0000-000000000001','TENANT-A','Tenant A','ACTIVE'),
 ('20000000-0000-0000-0000-000000000002','TENANT-B','Tenant B','ACTIVE');
@@ -99,9 +99,16 @@ DO $$ BEGIN
 END $$;
 
 -- Q09: correct revision transition succeeds and increments exactly once.
-SELECT (transition_der_state('13000000-0000-0000-0000-000000000001',2,'APPROVED','qualified transition',NULL)).revision AS q09_revision \gset
-DO $$ BEGIN
-  IF :q09_revision::bigint <> 3 THEN RAISE EXCEPTION 'Q09_FAIL revision expected 3 got %', :q09_revision; END IF;
+DO $$
+DECLARE
+  transitioned decision_evidence_record;
+BEGIN
+  transitioned := transition_der_state(
+    '13000000-0000-0000-0000-000000000001',2,'APPROVED','qualified transition',NULL
+  );
+  IF transitioned.revision <> 3 THEN
+    RAISE EXCEPTION 'Q09_FAIL revision expected 3 got %', transitioned.revision;
+  END IF;
 END $$;
 
 -- Q10: successful transition creates exactly one transition, audit, and outbox effect for correlation.
@@ -138,5 +145,4 @@ DO $$ BEGIN
 END $$;
 
 RESET ROLE;
-
 SELECT 'ARC-PERSIST-QUAL-001 PASS' AS qualification_result;
